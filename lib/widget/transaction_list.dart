@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
-  final List<Transaction> transactions;
+  final List<Transaction> transactions; // how this used
   TransactionList(this.transactions);
   @override
   Widget build(BuildContext context) {
@@ -12,39 +12,26 @@ class TransactionList extends StatelessWidget {
       child: ListView.builder(
         itemBuilder: (ctx, index) {
           return Card(
-              child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                decoration: BoxDecoration(
-                    border: Border.all(
-                  color: Colors.grey,
-                  width: 2,
-                )),
-                child: Text(
-                  '\$${transactions[index].amount}',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15.0,
-                  ),
+            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+            elevation: 5,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                radius: 30,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child:
+                      FittedBox(child: Text('\$${transactions[index].amount}')),
                 ),
               ),
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      transactions[index].title,
-                      style: Theme.of(context).appBarTheme.titleTextStyle,
-                    ),
-                    Text(DateFormat.yMMMMd().format(transactions[index].date!)),
-                  ],
-                ),
-              )
-            ],
-          ));
+              title: Text(
+                '${transactions[index].title}',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              subtitle:
+                  Text(DateFormat.yMMMd().format(transactions[index].date!)),
+            ),
+          );
         },
         itemCount: transactions.length,
         // i use map to transform this list of obj to list of widget
