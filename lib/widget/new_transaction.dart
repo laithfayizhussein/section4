@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTx;
+
   NewTransaction(this.addTx);
 
   @override
@@ -12,16 +14,34 @@ class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
 
   final amountController = TextEditingController();
+  DateTime? selectedDate;
 
   // create the fun for use it 3 times and to get the submit when the two fields is fill
   void submitData() {
     final enterdTitle = titleController.text;
     final enterdAmount = double.parse(amountController.text);
-    if (enterdTitle.isEmpty || enterdAmount < 0) {
+    if (enterdTitle.isEmpty || enterdAmount < 0 || selectedDate == null) {
       return;
     }
-    widget.addTx(titleController.text, double.parse(amountController.text));
+    widget.addTx(titleController.text, double.parse(amountController.text),
+        selectedDate);
     Navigator.of(context).pop();
+  }
+
+  void datePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -38,7 +58,7 @@ class _NewTransactionState extends State<NewTransaction> {
               controller: titleController,
               onSubmitted: (_) =>
                   submitData, // should add anonymous fuc and the underscore for telling my self that i
-              // didnt use it its just to flutter
+              // didn't use it its just to flutter
             ),
             TextField(
               decoration: InputDecoration(labelText: 'Amount'),
@@ -46,9 +66,32 @@ class _NewTransactionState extends State<NewTransaction> {
               keyboardType: TextInputType.number,
               onSubmitted: (_) => submitData,
             ),
+            SizedBox(
+              height: 50,
+            ),
+            Container(
+              width: 250,
+              child: Divider(
+                color: Colors.black,
+              ),
+            ),
+            Container(
+              height: 70,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(selectedDate == null
+                        ? 'no date choice '
+                        : 'picked date :${DateFormat.yMMMd().format(selectedDate!)}'),
+                  ),
+                  TextButton(onPressed: datePicker, child: Text('choose Date')),
+                ],
+              ),
+            ),
             TextButton(
                 style: TextButton.styleFrom(
-                  primary: Colors.purple,
+                  primary: Colors.white,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   onSurface: Colors.grey,
                 ),
                 child: Text('add something '),
