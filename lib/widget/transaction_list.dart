@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import './transaction_item.dart';
 import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
@@ -10,39 +10,15 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 500,
-      child: ListView.builder(
-        itemBuilder: (ctx, index) {
-          return Card(
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-            elevation: 5,
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                radius: 30,
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child:
-                      FittedBox(child: Text('\$${transactions[index].amount}')),
-                ),
-              ),
-              title: Text(
-                '${transactions[index].title}',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              subtitle:
-                  Text(DateFormat.yMMMd().format(transactions[index].date!)),
-              trailing: IconButton(
-                icon: Icon(Icons.delete),
-                color: Theme.of(context).colorScheme.error,
-                // didn't use the function word property just cos i need to pass the id to the function and onpressed doesn't take function
-                // so i need to make anonymous function and force it to take it
-                onPressed: () => deleteTx(transactions[index].id),
-              ),
-            ),
-          );
-        },
-        itemCount: transactions.length,
-        // i use map to transform this list of obj to list of widget
+      // i change the list view and map over it cos if add key it will be change when ever state change
+      // as the random background color
+      // but with value every element make connected with widget and
+      // flutter will not delete the element and keep the state cos theres another element
+      child: ListView(
+        children: transactions
+            .map((tx) => TransactionItem(
+                key: ValueKey(tx.id), transaction: tx, deleteTx: deleteTx))
+            .toList(), // i use map to transform this list of obj to list of widget
       ),
     );
   }
